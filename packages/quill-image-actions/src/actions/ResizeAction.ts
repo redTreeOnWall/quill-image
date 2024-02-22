@@ -57,7 +57,7 @@ export default class ResizeAction extends Action {
       Object.assign(box.style, this.formatter.options.resize.handleStyle);
     }
 
-    box.addEventListener('mousedown', this.onMouseDown);
+    box.addEventListener('pointerdown', this.onMouseDown);
 
     return box;
   }
@@ -105,10 +105,12 @@ export default class ResizeAction extends Action {
     }
   }
 
-  onMouseDown = (event: MouseEvent): void => {
+  onMouseDown = (event: PointerEvent): void => {
     if (!(event.target instanceof HTMLElement)) {
       return;
     }
+    event.stopPropagation();
+    event.preventDefault();
     this.dragHandle = event.target;
     this.setCursor(this.dragHandle.style.cursor);
 
@@ -129,11 +131,14 @@ export default class ResizeAction extends Action {
 
     event.preventDefault();
     event.stopPropagation();
-    document.addEventListener('mousemove', this.onDrag);
-    document.addEventListener('mouseup', this.onMouseUp);
+    document.addEventListener('pointermove', this.onDrag);
+    document.addEventListener('pointerup', this.onMouseUp);
   };
 
   onDrag = (event: MouseEvent): void => {
+    event.stopPropagation();
+    event.preventDefault();
+
     if (!this.formatter.currentSpec) {
       return;
     }
@@ -167,7 +172,7 @@ export default class ResizeAction extends Action {
 
   onMouseUp = (): void => {
     this.setCursor('');
-    document.removeEventListener('mousemove', this.onDrag);
-    document.removeEventListener('mouseup', this.onMouseUp);
+    document.removeEventListener('pointermove', this.onDrag);
+    document.removeEventListener('pointerup', this.onMouseUp);
   };
 }

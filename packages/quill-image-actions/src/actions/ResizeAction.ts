@@ -135,6 +135,7 @@ export default class ResizeAction extends Action {
     document.addEventListener('pointerup', this.onMouseUp);
   };
 
+  private needUpdateFormatter = false;
   onDrag = (event: MouseEvent): void => {
     event.stopPropagation();
     event.preventDefault();
@@ -166,6 +167,7 @@ export default class ResizeAction extends Action {
     target.style.removeProperty('height');
     target.setAttribute('width', `${newWidth}`);
     target.setAttribute('height', `${newHeight}`);
+    this.needUpdateFormatter = true;
 
     this.formatter.update();
   };
